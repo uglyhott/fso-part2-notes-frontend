@@ -37,20 +37,16 @@ const App = () => {
 
   }, [])
 
-  const addNote = (event) => {
+  const addNote = async (event) => {
     event.preventDefault()
     const noteObject = {
       content: newNote,
       important: Math.random() > 0.5
     }
 
-    noteService
-      .create(noteObject)
-      .then(returnedNote => {
-        setNotes(notes.concat(returnedNote))
-        setNewNote('')
-      })
-
+    const returnedNote = await noteService.create(noteObject)
+    setNotes(notes.concat(returnedNote))
+    setNewNote('')
   }
 
   const handleNoteChange = (event) => {
@@ -63,6 +59,7 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+      noteService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -121,6 +118,7 @@ const App = () => {
   const noteForm = () => (
     <form onSubmit={addNote}>
         <input
+          name='Note'
           value={newNote}
           onChange={handleNoteChange}
         />
