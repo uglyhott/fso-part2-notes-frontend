@@ -37,20 +37,25 @@ const App = () => {
 
   }, [])
 
-  const addNote = (event) => {
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem('loggedInNotesAppUser')
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
+  }, [])
+
+  const addNote = async (event) => {
     event.preventDefault()
     const noteObject = {
       content: newNote,
       important: Math.random() > 0.5
     }
 
-    noteService
-      .create(noteObject)
-      .then(returnedNote => {
-        setNotes(notes.concat(returnedNote))
-        setNewNote('')
-      })
-
+    const returnedNote = await noteService.create(noteObject)
+    setNotes(notes.concat(returnedNote))
+    setNewNote('')
   }
 
   const handleNoteChange = (event) => {
@@ -63,6 +68,8 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+      window.localStorage.setItem('loggedInNotesAppUser', JSON.stringify(user))
+      noteService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -72,6 +79,12 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedInNotesAppUser')
+    setUser(null)
+    noteService.setToken('')
   }
 
   const toggleImportanceOf = id => {
@@ -121,6 +134,7 @@ const App = () => {
   const noteForm = () => (
     <form onSubmit={addNote}>
         <input
+          name='Note'
           value={newNote}
           onChange={handleNoteChange}
         />
@@ -140,7 +154,10 @@ const App = () => {
       {user === null  ?
         loginForm() :
         <div>
-          <p>{user.name} logged-in</p>
+          <p>
+            {user.name} logged-in
+            <button type='button' onClick={handleLogout}>logout</button>
+          </p>
           {noteForm()}
         </div>
       }
