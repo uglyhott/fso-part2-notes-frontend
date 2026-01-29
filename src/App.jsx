@@ -23,7 +23,7 @@ const Footer = () => {
 }
 
 const App = () => {
-const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState([])
   const [showAll, setShowall] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
@@ -56,7 +56,7 @@ const [notes, setNotes] = useState([])
       .create(noteObject)
       .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
-    })
+      })
   }
 
   const handleNoteChange = (event) => {
@@ -109,9 +109,9 @@ const [notes, setNotes] = useState([])
   }
 
   const loginForm = () => {
-    const hideWhenVisible = {display: loginVisible ? 'none' : ''}
-    const showWhenVisible = {display: loginVisible ? '' : 'none'}
-    
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
     return (
       <div>
         <div style={hideWhenVisible}>
@@ -125,7 +125,7 @@ const [notes, setNotes] = useState([])
             handlePasswordChange={({ target }) => setPassword(target.value)}
             handleSubmit={handleLogin}
           />
-            <button onClick={() => setLoginVisible(false)}>cancel</button>
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
         </div>
       </div>
     )
